@@ -1,5 +1,9 @@
 import React,{Component} from 'react';
-
+import Home from './components/Home';
+import About from './components/About'
+import {BrowserRouter as Router ,Route,Routes,Switch,Link} from 'react-router-dom'
+import Form from './components/Form'
+import { TextField} from '@mui/material'
 class App extends Component{
   constructor(){
     super();
@@ -24,8 +28,16 @@ class App extends Component{
     }
     return (
       <div>
-        <h1 style={this.state.showGreen?green:blue}>Yewaass</h1>
-       <button onClick={this.Toggler}>Toggle</button>
+      
+       <Form />
+       <Router>
+
+         <Routes>
+           <Route path="/home" exact  element={<Home/>}></Route>
+           <Route path="/about" element={<About/>}></Route>
+         </Routes>
+
+       </Router>
       </div>
     )
   }
