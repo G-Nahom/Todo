@@ -3,6 +3,7 @@ import Home from './components/Home';
 import About from './components/About'
 import {BrowserRouter as Router ,Route,Routes,Switch,Link} from 'react-router-dom'
 import Form from './components/Form'
+import Navbar from './components/Navbar'
 import { TextField} from '@mui/material'
 class App extends Component{
   constructor(){
@@ -28,16 +29,17 @@ class App extends Component{
     }
     return (
       <div>
-      
-       <Form />
-       <Router>
-
+       
+         <Router>
          <Routes>
+           <Route path='/' exact element={<Home/>}></Route>
            <Route path="/home" exact  element={<Home/>}></Route>
            <Route path="/about" element={<About/>}></Route>
+           <Route path='/form' element={<Form/>}></Route>
          </Routes>
 
        </Router>
+       
       </div>
     )
   }

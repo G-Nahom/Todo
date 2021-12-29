@@ -1,3 +1,5 @@
+import {useRef,useState} from 'react';
+import Navbar from './Navbar'
 const Form=()=>{
     const borderStyle={
         border:'3px solid steelblue',
@@ -9,13 +11,26 @@ const Form=()=>{
         margin:'auto',
         
     }
-    
-    const handleSubmit=(event)=>{
-       event.preventDefault();
+    const [data,setData]=useState({});
+    const  firstName=useRef();
+    const  password = useRef();
+    const  email = useRef();
+    const handleSubmit=(data,event)=>{
+        event.preventDefault();
+       const tempdata={
+            fname:firstName.current.value,
+            email:email.current.value,
+            password:password.current.value
+        }
+       // this.setData(tempdata);
+       console.log(tempdata);
+       alert('insered data')
+       
     }
     return(
-
+        
         <div className="jubotron">
+            <Navbar/>
         <div  className="row">
             <div className="col"></div>
 
@@ -24,19 +39,20 @@ const Form=()=>{
              <div className="card-title text-center"><h1>SIGN UP</h1></div>
              <div className="form-group">
             
-             <input type="text" placeholder="First Name" className="form-control"/>
+             <input ref={firstName}  type="text" placeholder="First Name" className="form-control"/>
             </div>
+            
             <br/>
 
              <div className="form-group">
-             <input type="text" placeholder="Emial" className="form-control"/>
+             <input ref={email}  type="text" placeholder="Emial" className="form-control"/>
  
              </div>
              <br/>
              <div className="form-group">
 
-             <input type="password" placeholder="Password" className="form-control"/>
- <br></br>
+             <input ref={password} name="password" type="password" placeholder="Password" className="form-control"/>
+              
              </div>
              <button style={centerButton} className="btn btn-success text-ceter">Submit</button>
         <br/>

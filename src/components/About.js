@@ -1,8 +1,17 @@
-
+import Navbar from './Navbar'
 function About(){
-
+const list=['ReactJs','Angular'];
     return(
-        <div><h1>About</h1></div>
+        <>
+        <Navbar/>
+        <div style={{backgroundColor:'indianred'}}>
+            <h1 style={{textAlign:'center'}}>About</h1>
+            <ul>
+                {list.map((list,index)=><li key={list}>{list+index}</li>)}
+            </ul>
+        </div>
+
+        </>
     )
 }
 
