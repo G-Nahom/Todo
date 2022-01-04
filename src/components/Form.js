@@ -12,7 +12,8 @@ class Form extends Component{
     constructor(){
         super();
         this.state={
-           
+                update:false,
+                id:'',
                 Deivice_Name:'',
                 Device_Model:'',
                 Production_Year:'',
@@ -21,16 +22,16 @@ class Form extends Component{
             ,
             data:[]
         }
-       
+       this.handleDelete=this.handleDelete.bind(this);
+       this.onIndexTemplate = this.onIndexTemplate.bind(this);
+       this.handleUpdate = this.handleUpdate.bind(this);
     }
     
     componentDidMount(){
-       axios.get('http://localhost:8000/deviceapi').then(
-           (res)=>{
-                this.setState({data:res.data})
-               console.log('responese',this.state.data);
-           }
-       ).catch('Error')
+      this.getData()
+    }
+    handleDelete=()=>{
+      console.log(this.state.data);
     }
     handleSubmit=(e)=>{
         e.preventDefault();
@@ -41,18 +42,61 @@ class Form extends Component{
             IMEIL:this.state.IMEIL,
             Produced_By:this.state.Produced_By
         }
-        const header=  {
-            'Access-Control-Allow-Origin' : '*',
-            'Access-Control-Allow-Methods':'GET,PUT,POST,DELETE,PATCH,OPTIONS',
-            }
-        axios.post( 'http://localhost:8000/deviceapi',
-            formData,{header}
-           
-          ).then((res)=>console.log(res)).catch('Error');
+       
+        axios.post('http://localhost:8000/deviceapi',formData).then((res)=>{
+          console.log(res)
+          this.getData();
+        }).catch('Errorr.')
        // axios.post('http://localhost:8000/deviceapi',{formData}).then((res)=>console.log(res)).catch('Eroor')
         console.log('submitted..',formData);
     }
-    
+      getData=()=>{
+       axios.get('http://localhost:8000/deviceapi').then(
+          (res)=>this.setState({data:res.data})
+      ).catch('error')
+    }
+    onIndexTemplate(dataa, props) {
+         
+        return <>
+           <Button onClick={()=>{
+            axios.delete(`http://localhost:8000/deviceapi/${dataa.id}`).then(
+                (res)=>{
+                    this.getData();
+                }
+            ).catch('Error');
+        }} className='p-button-danger' label="Delete"><i className='pi pi-trash'></i></Button>
+        <Button onClick={()=>{
+           
+            this.setState({
+                update:true,
+                id:dataa.id,
+                Deivice_Name:dataa.Deivice_Name,
+                Device_Model:dataa.Device_Model,
+                Production_Year:dataa.Production_Year,
+                IMEIL:dataa.IMEIL,
+                Produced_By:dataa.Produced_By
+            })
+             console.log('sed data',dataa)
+
+        }} className='p-button-success' label="Edit"><i className='pi pi-pencil'></i></Button>
+        </>;
+    }
+    handleUpdate(e){
+        e.preventDefault();
+        console.log(this.state.id)
+        const formData={
+            id:this.state.id,
+            Deivice_Name:this.state.Deivice_Name,
+            Device_Model:this.state.Device_Model,
+            Production_Year:this.state.Production_Year,
+            IMEIL:this.state.IMEIL,
+            Produced_By:this.state.Produced_By
+        }
+         console.log('form data',formData)
+        axios.put(`http://localhost:8000/deviceapi/${formData.id}`,formData).then(
+            (res)=>console.log(res)
+        ).catch('error');
+    }
     render=()=>{
         const marginStyle={
             marginBottom:'10px',
@@ -65,7 +109,7 @@ class Form extends Component{
         }
         const paginatorLeft = <Button type="button" icon="pi pi-refresh" className="p-button-text" />;
         const paginatorRight = <Button type="button" icon="pi pi-cloud" className="p-button-text" />;
-        
+      
         return(
             <div className='container rounded bg-secondary mt-5'>
                 <h2 className='text-center shadow rounded bg-warning text-danger'>Electronic Device Data <i className='pi pi-user'></i> </h2>
@@ -98,13 +142,15 @@ class Form extends Component{
             </div>
             
             <br/>        
-                <Button onClick={this.handleSubmit} className='p-button-info'style={{display:'block',margin:'auto'}} label="Send"><i className='pi pi-send'></i></Button>
+             {this.state.update?<Button onClick={this.handleUpdate} className='p-button-success'style={{display:'block',margin:'auto'}} label="Update"><i className='pi pi-refresh'></i></Button>
+             :<Button onClick={this.handleSubmit} className='p-button-info'style={{display:'block',margin:'auto'}} label="Send"><i className='pi pi-save'></i></Button>
+        }
             </form>   
              </div>
               </Card>
               </div>
             <div className='card'>
-            <DataTable value={this.state.data}
+            <DataTable value={this.state.data} 
             paginator responsiveLayout="scroll"
             paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords}" rows={2} rowsPerPageOptions={[10,20,50]}
@@ -114,7 +160,7 @@ class Form extends Component{
               <Column field='Device_Model' header='Device_Model'/>
               <Column field='Produced_By' header='Produced_By'/>
               <Column field='Production_Year' header='Production_Year'/>
-             
+              <Column  field='id' header="id" body={this.onIndexTemplate} />
               </DataTable>
                 </div>
              </div>
